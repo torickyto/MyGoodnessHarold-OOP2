@@ -2,22 +2,22 @@ using MySqlConnector;
 using System;
 using System.Collections.Generic;
 
-namespace learning_management_sys.Data
+namespace MyGoodnessHarold.Data
 {
     public class Product
     {
-        public string ProductID { get; set; }
+        public int ProductID { get; set; }  // Change type to int
         public string ProductName { get; set; }
         public string Price { get; set; }
         public string StockQuantity { get; set; }
         public string Category { get; set; }
 
-        public Product(string ProductIDID, string ProductName, string Price, string StockQuantity, string Category)
+        public Product(int ProductID, string ProductName, decimal Price, int StockQuantity, string Category)
         {
-            this.ProductID = ProductIDID;
+            this.ProductID = ProductID;
             this.ProductName = ProductName;
-            this.Price = Price;
-            this.StockQuantity = StockQuantity;
+            this.Price = Price.ToString();  // Convert decimal to string
+            this.StockQuantity = StockQuantity.ToString();  // Convert int to string
             this.Category = Category;
         }
 
@@ -29,22 +29,22 @@ namespace learning_management_sys.Data
                 Server = "localhost",
                 Database = "harold",
                 UserID = "root",
-                Password = "",
+                Password = "andromon"
             };
 
             using (var connection = new MySqlConnection(builder.ConnectionString))
             {
                 connection.Open();
-                string sql = "SELECT * FROM employees";
+                string sql = "SELECT * FROM products";
                 MySqlCommand command = new MySqlCommand(sql, connection);
                 MySqlDataReader reader = command.ExecuteReader();
                 while (reader.Read())
                 {
                     ProductIDs.Add(new Product(
-                        reader.GetString("ProductID"),
+                        reader.GetInt32("ProductID"),  // Use GetInt32 for int type
                         reader.GetString("ProductName"),
-                        reader.GetString("Price"),
-                        reader.GetString("StockQuantity"),
+                        reader.GetDecimal("Price"),  // Use GetDecimal for decimal type
+                        reader.GetInt32("StockQuantity"),  // Use GetInt32 for int type
                         reader.GetString("Category")
                     ));
                 }
