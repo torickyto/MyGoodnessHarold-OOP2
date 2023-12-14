@@ -1,4 +1,7 @@
 ﻿@page "/login"
+@using MyGoodnessHarold.Data;
+@using MySqlConnector;
+@inject NavigationManager NavigationManager
 
 <div class="login-container">
     <link href="css/Login.css" rel="stylesheet">
@@ -15,16 +18,21 @@
         <div class="pin-entry">
             <label for="pinInput">Enter your PIN</label>
             <input id="pinInput" type="password" maxlength="4" @bind="userPin" />
+            @*TEMPORARY VALUE CHECK*@
+            <div class="pin-display">
+                <label for="pinDisplay">TEST</label>
+                <input id="pinDisplay" type="text" readonly value="@userPin" />
+            </div>
+            @*TEMPORARY VALUE CHECK*@
             <div class="pin-buttons">
                 @for (int i = 1; i <= 9; i++)
                 {
-                    <button @onclick="() => AddDigit(i.ToString())">@i</button>
+                    int localValue = i;
+                    <button @onclick="() => AddDigit(localValue.ToString())">@localValue</button>
                 }
                 <button @onclick="ClearPin">X</button>
                 <button @onclick="() => AddDigit(0.ToString())">0</button>
                 <button @onclick="SubmitPin">→</button>
-
-
             </div>
         </div>
     </div>
@@ -32,6 +40,7 @@
 
 @code {
     private string userPin = "";
+    private Employee loggedInEmployee;
 
     private void AddDigit(string digit)
     {
@@ -49,9 +58,25 @@
         }
     }
 
-    private void SubmitPin()
+    private async void SubmitPin()
     {
-        // Handle the PIN submission logic here
-        Console.WriteLine($"PIN Entered: {userPin}");
+        if (!string.IsNullOrEmpty(userPin) && userPin.Length == 4)
+        {
+            bool isValidPin = LoginHelper.ValidatePin(userPin, out loggedInEmployee);
+
+            if (isValidPin)
+            {
+                NavigationManager.NavigateTo("/menu", true);
+            }
+            else
+            {
+                Console.WriteLine("Invalid PIN");
+            }
+        }
+        else
+        {
+            Console.WriteLine("Invalid PIN");
+        }
+        await Task.Delay(100);
     }
 }
