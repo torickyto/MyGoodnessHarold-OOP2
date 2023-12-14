@@ -121,7 +121,7 @@
 
 
 @code {
-    private List<Product> allProducts = Product.Connect();
+    private List<Product> allProducts = Product.GetAllProducts();
     private List<Product> matchProducts = new List<Product>();
     private List<string> products = new List<string>();
     private List<string> employees = new List<string>();
@@ -133,7 +133,7 @@
     private string searchName;
 
 
-    // Populate the selected Product into input elements
+    @/// Populate the selected Product into input elements
     private void OnProductSelectionChange(ChangeEventArgs e)
     {
         selectedID = e.Value.ToString();
@@ -145,7 +145,6 @@
             selectedPrice = values[2];
         }
     }
-
     // Search matched courses
     private void FindProduct()
     {
@@ -155,20 +154,20 @@
         {
             bool match = true;
 
-            if (!string.IsNullOrEmpty(searchID) && Product.ProductID != int.Parse(searchID))
-            {
-                match = false;
-            }
+           if (!string.IsNullOrEmpty(searchID) && product.ProductID != int.Parse(searchID))
+    {
+        match = false;
+    }
 
-            if (!string.IsNullOrEmpty(searchName) && !Product.ProductName.Contains(searchName, StringComparison.OrdinalIgnoreCase))
-            {
-                match = false;
-            }
+    if (!string.IsNullOrEmpty(searchName) && !product.ProductName.Contains(searchName, StringComparison.OrdinalIgnoreCase))
+    {
+        match = false;
+    }
 
-            if (!string.IsNullOrEmpty(searchPrice) && !Product.Price.Contains(searchPrice, StringComparison.OrdinalIgnoreCase))
-            {
-                match = false;
-            }
+    if (!string.IsNullOrEmpty(searchPrice) && !product.Price.ToString().Contains(searchPrice, StringComparison.OrdinalIgnoreCase))
+    {
+        match = false;
+    }
 
             if (match)
             {

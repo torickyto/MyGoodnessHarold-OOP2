@@ -1,4 +1,6 @@
 ﻿@page "/menu"
+@using MyGoodnessHarold.Data;
+@using MySqlConnector;
 
 <div class="menu-container">
     <link href="css/Menu.css" rel="stylesheet">
@@ -9,14 +11,14 @@
 
     <div class="menu-body">
         <div class="menu-items">
-            @foreach (var item in MenuItems)
+            @foreach (var product in Products)
             {
                 <div class="menu-item">
                     <div class="item-info">
-                        <div class="item-name">@item.Name</div>
-                        <div class="item-price">@item.Price.ToString("C")</div>
+                        <div class="item-name">@product.ProductName</div>
+                        <div class="item-price">@product.Price.ToString("C")</div>
                     </div>
-                    <button @onclick="() => AddItem(item)">+</button>
+                    <button @onclick="() => AddItem(product)">+</button>
                 </div>
             }
         </div>
@@ -41,33 +43,27 @@
 </div>
 
 @code {
-    private List<MenuItem> MenuItems = new List<MenuItem>
-    {
-        new MenuItem { Name = "Classic Cream Pie", Price = 14 },
-        new MenuItem { Name = "Meat Lovers Pizza", Price = 31 },
-        new MenuItem { Name = "Vegetarian Lasagna", Price = 20 },
-        new MenuItem { Name = "Grilled Salmon", Price = 27 },
-        new MenuItem { Name = "Chicken Caesar Salad", Price = 18 },
-        new MenuItem { Name = "Spicy Ramen Bowl", Price = 16 },
-        new MenuItem { Name = "Pulled Pork Sandwich", Price = 22 },
-        new MenuItem { Name = "Beef Tacos", Price = 19 },
-        new MenuItem { Name = "Mushroom Risotto", Price = 25 }
-    };
+    private List<Product> Products;
 
     private List<MenuItem> SelectedItems = new List<MenuItem>();
 
     private decimal Total => SelectedItems.Sum(item => item.Price * item.Quantity);
 
-    private void AddItem(MenuItem item)
+    protected override void OnInitialized()
     {
-        var existingItem = SelectedItems.FirstOrDefault(i => i.Name == item.Name);
+        Products = Product.GetAllProducts();
+    }
+
+    private void AddItem(Product product)
+    {
+        var existingItem = SelectedItems.FirstOrDefault(i => i.Name == product.ProductName);
         if (existingItem != null)
         {
             existingItem.Quantity++;
         }
         else
         {
-            SelectedItems.Add(new MenuItem { Name = item.Name, Price = item.Price, Quantity = 1 });
+            SelectedItems.Add(new MenuItem { Name = product.ProductName, Price = product.Price, Quantity = 1 });
         }
     }
 
