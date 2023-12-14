@@ -1,0 +1,81 @@
+﻿@page "/Product_Management"
+@inject NavigationManager NavigationManager
+@using MyGoodnessHarold.Data;
+@using MySqlConnector;
+
+<div class="product-management-container">
+    <link href="css/ProductManagement.css" rel="stylesheet">
+
+    <div class="header">
+        <span class="title">Product Management</span>
+    </div>
+
+   
+    <div class="content">
+        <table>
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Name</th>
+                    <th>Price</th>
+                    <th>Stock Quantity</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var product in Products)
+                {
+                    <tr>
+                        <td>@product.ProductID</td>
+                        <td>@product.ProductName</td>
+                        <td>@product.Price</td>
+                        <td>@product.StockQuantity</td>
+                        <td>@product.Category</td>
+                        <td>
+                            <button class="delete" @onclick="() => DeleteProduct(product)">Delete</button>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+
+        <form>
+            <input type="hidden" id="productId" />
+            <label for="productName">Product Name:</label>
+            <input type="text" id="productName" required />
+
+            <label for="price">Price:</label>
+            <input type="number" id="price" step="0.01" required />
+
+            <label for="stockQuantity">Stock Quantity:</label>
+            <input type="number" id="stockQuantity" required />
+
+            <label for="categoryId">Category:</label>
+            <select id="categoryId">
+                <option value="1">Mains</option>
+                <option value="2">Appetizers</option>
+                <option value="3">Desserts</option>
+            </select>
+
+            <button class="save" onclick="saveProduct()">Save Product</button>
+        </form>
+    </div>
+</div>
+@code {
+    private List<Product> Products;
+
+    protected override void OnInitialized()
+
+    { 
+        Products = Product.GetAllProducts();
+    }
+
+    private void DeleteProduct(Product product)
+    {
+        
+        Product.DeleteProduct(product.ProductID);
+
+       
+        Products.Remove(product);
+    }
+}
