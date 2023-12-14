@@ -1,0 +1,93 @@
+﻿@page "/menu"
+
+<div class="menu-container">
+    <link href="css/Menu.css" rel="stylesheet">
+
+    <div class="menu-header">
+        <h1>Menu</h1>
+    </div>
+
+    <div class="menu-body">
+        <div class="menu-items">
+            @foreach (var item in MenuItems)
+            {
+                <div class="menu-item">
+                    <div class="item-info">
+                        <div class="item-name">@item.Name</div>
+                        <div class="item-price">@item.Price.ToString("C")</div>
+                    </div>
+                    <button @onclick="() => AddItem(item)">+</button>
+                </div>
+            }
+        </div>
+        <div class="selected-items">
+            <div class="selected-items-list">
+                @foreach (var selectedItem in SelectedItems.Where(i => i.Quantity > 0))
+                {
+                    <div class="selected-item">
+                        <div class="selected-item-name">@selectedItem.Name x @selectedItem.Quantity</div>
+                        <div class="selected-item-price">@((selectedItem.Price * selectedItem.Quantity).ToString("C"))</div>
+                        <button class="removeButton" @onclick="() => RemoveItem(selectedItem)">-</button>
+                    </div>
+                }
+            </div>
+            <div class="total">
+                <div>GST 10%: @((Total * 0.1m).ToString("C"))</div>
+                <div>Total: @((Total * 1.1m).ToString("C"))</div>
+                <button class="print-button">PRINT</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@code {
+    private List<MenuItem> MenuItems = new List<MenuItem>
+    {
+        new MenuItem { Name = "Classic Cream Pie", Price = 14 },
+        new MenuItem { Name = "Meat Lovers Pizza", Price = 31 },
+        new MenuItem { Name = "Vegetarian Lasagna", Price = 20 },
+        new MenuItem { Name = "Grilled Salmon", Price = 27 },
+        new MenuItem { Name = "Chicken Caesar Salad", Price = 18 },
+        new MenuItem { Name = "Spicy Ramen Bowl", Price = 16 },
+        new MenuItem { Name = "Pulled Pork Sandwich", Price = 22 },
+        new MenuItem { Name = "Beef Tacos", Price = 19 },
+        new MenuItem { Name = "Mushroom Risotto", Price = 25 }
+    };
+
+    private List<MenuItem> SelectedItems = new List<MenuItem>();
+
+    private decimal Total => SelectedItems.Sum(item => item.Price * item.Quantity);
+
+    private void AddItem(MenuItem item)
+    {
+        var existingItem = SelectedItems.FirstOrDefault(i => i.Name == item.Name);
+        if (existingItem != null)
+        {
+            existingItem.Quantity++;
+        }
+        else
+        {
+            SelectedItems.Add(new MenuItem { Name = item.Name, Price = item.Price, Quantity = 1 });
+        }
+    }
+
+    private void RemoveItem(MenuItem item)
+    {
+        var existingItem = SelectedItems.FirstOrDefault(i => i.Name == item.Name);
+        if (existingItem != null)
+        {
+            existingItem.Quantity--;
+            if (existingItem.Quantity == 0)
+            {
+                SelectedItems.Remove(existingItem);
+            }
+        }
+    }
+
+    public class MenuItem
+    {
+        public string Name { get; set; }
+        public decimal Price { get; set; }
+        public int Quantity { get; set; }
+    }
+}

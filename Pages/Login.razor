@@ -1,0 +1,57 @@
+﻿@page "/login"
+
+<div class="login-container">
+    <link href="css/Login.css" rel="stylesheet">
+
+    <div class="header">
+        <span class="title">Harold POS</span>
+    </div>
+
+    <div class="login-box">
+        <div class="branding">
+            <img src="Images/myGoodnessHarold.jpg" alt="My Goodness Harold logo" />
+
+        </div>
+        <div class="pin-entry">
+            <label for="pinInput">Enter your PIN</label>
+            <input id="pinInput" type="password" maxlength="4" @bind="userPin" />
+            <div class="pin-buttons">
+                @for (int i = 1; i <= 9; i++)
+                {
+                    <button @onclick="() => AddDigit(i.ToString())">@i</button>
+                }
+                <button @onclick="ClearPin">X</button>
+                <button @onclick="() => AddDigit(0.ToString())">0</button>
+                <button @onclick="SubmitPin">→</button>
+
+
+            </div>
+        </div>
+    </div>
+</div>
+
+@code {
+    private string userPin = "";
+
+    private void AddDigit(string digit)
+    {
+        if (userPin.Length < 4)
+        {
+            userPin += digit;
+        }
+    }
+
+    private void ClearPin()
+    {
+        if (userPin.Length > 0)
+        {
+            userPin = userPin[0..^1];
+        }
+    }
+
+    private void SubmitPin()
+    {
+        // Handle the PIN submission logic here
+        Console.WriteLine($"PIN Entered: {userPin}");
+    }
+}
