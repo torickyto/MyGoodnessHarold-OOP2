@@ -1,4 +1,7 @@
 ﻿@page "/login"
+@using MyGoodnessHarold.Data;
+@using MySqlConnector;
+@inject NavigationManager NavigationManager
 
 <div class="login-container">
     <link href="css/Login.css" rel="stylesheet">
@@ -32,6 +35,7 @@
 
 @code {
     private string userPin = "";
+    private Employee loggedInEmployee;
 
     private void AddDigit(string digit)
     {
@@ -51,7 +55,26 @@
 
     private void SubmitPin()
     {
-        // Handle the PIN submission logic here
-        Console.WriteLine($"PIN Entered: {userPin}");
+        if (!string.IsNullOrEmpty(userPin) && userPin.Length == 4)
+        {
+            bool isValidPin = LoginHelper.ValidatePin(userPin, out loggedInEmployee);
+
+            if (isValidPin)
+            {
+                // Successfully logged in
+                Console.WriteLine($"PIN Entered: {userPin}");
+                Console.WriteLine($"Employee Logged In: {loggedInEmployee}");
+
+                NavigationManager.NavigateTo("/productmanagement");
+            }
+            else
+            {
+                Console.WriteLine("Invalid PIN");
+            }
+        }
+        else
+        {
+            Console.WriteLine("Invalid PIN");
+        }
     }
 }
