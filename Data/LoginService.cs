@@ -21,8 +21,8 @@ namespace MyGoodnessHarold.Data
 
                 while (reader.Read())
                 {
-                    loggedInEmployee = new Employee(
-                        reader.GetString("EmployeeID"),
+                        loggedInEmployee = new Employee(
+                        reader.GetInt32("EmployeeID").ToString(), // Convert INT to String
                         reader.GetString("FirstName"),
                         reader.GetString("LastName"),
                         reader.GetString("Position")

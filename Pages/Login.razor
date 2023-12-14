@@ -58,7 +58,7 @@
         }
     }
 
-    private async Task SubmitPin()
+    private async void SubmitPin()
     {
         if (!string.IsNullOrEmpty(userPin) && userPin.Length == 4)
         {
@@ -66,11 +66,7 @@
 
             if (isValidPin)
             {
-                // Successfully logged in
-                Console.WriteLine($"PIN Entered: {userPin}");
-                Console.WriteLine($"Employee Logged In: {loggedInEmployee}");
-
-                NavigationManager.NavigateTo("/productmanagement");
+                NavigationManager.NavigateTo("/menu", true);
             }
             else
             {
