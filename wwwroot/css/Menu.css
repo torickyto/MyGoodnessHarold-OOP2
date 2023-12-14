@@ -1,0 +1,119 @@
+﻿.menu-container {
+    font-family: 'Arial', sans-serif;
+    background-color: #fff;
+    color: #333;
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+}
+
+.menu-header {
+    background-color: #06275a;
+    color: #FFFFFF;
+    padding: 16px;
+    text-align: center;
+}
+
+.menu-body {
+    display: flex;
+    width: 100%;
+}
+
+.menu-items {
+    flex-grow: 2;
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 16px;
+    padding: 16px;
+}
+
+.menu-item {
+    border: 1px solid #ddd;
+    padding: 16px;
+    cursor: pointer;
+}
+
+.item-name {
+    font-weight: bold;
+    margin-bottom: 8px;
+}
+
+.item-price {
+    color: #28A745;
+}
+
+.selected-items {
+    flex-grow: 1;
+    border-left: 1px solid #ddd; 
+    padding: 16px;
+    background-color: #f0f0f0; 
+}
+
+.selected-items-list {
+    overflow-y: auto; 
+}
+
+.selected-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center; 
+    padding: 8px;
+    border-bottom: 1px solid #ddd;
+}
+
+.removeButton {
+    width: 20px; 
+    height: 20px; 
+    margin: auto 0 auto 10px; 
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    background-color: #ff6a00; 
+    color: white;
+    border: none;
+    border-radius: 10px; 
+    font-size: 16px;
+    font-weight: bold;
+    padding: 5px;
+}
+
+
+ .removeButton:hover {
+    background-color: #ff1a1a; 
+}
+
+.selected-item-name {
+    padding: 8px;
+    margin: 2px;
+}
+
+.selected-item-price {
+    flex: 1;
+    margin-right: 10px;
+}
+
+.removeButton {
+
+}
+
+.total {
+    border-top: 1px solid #ddd;
+    padding: 16px;
+    font-weight: bold;
+}
+
+.total div {
+    margin-bottom: 8px;
+}
+
+
+.print-button {
+    background-color: #325f29;
+    color: white;
+    padding: 8px 16px;
+    margin-bottom: 8px;
+    cursor: pointer;
+}
+
+

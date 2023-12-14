@@ -1,0 +1,63 @@
+﻿
+.login-container {
+    font-family: 'Arial', sans-serif;
+    color: #333;
+    max-width: 400px;
+    margin: 50px auto;
+    padding: 20px;
+    background-color: #f0f0f0;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
+
+.header {
+    text-align: center;
+}
+
+.title {
+    font-size: 24px;
+    color: #333;
+}
+
+.branding img {
+    max-width: 80%;
+    height: auto;
+    display: block;
+    margin: 0 auto 20px;
+    padding: 0;
+}
+
+.pin-entry label {
+    display: block;
+    text-align: center;
+    margin-bottom: 10px;
+}
+
+.pin-entry input {
+    font-size: 18px;
+    padding: 10px;
+    margin-bottom: 20px;
+    width: calc(100% - 20px);
+    text-align: center;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+.pin-buttons {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+}
+
+    .pin-buttons button {
+        padding: 15px;
+        font-size: 18px;
+        background-color: #f9f9f9;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        cursor: pointer;
+    }
+
+        .pin-buttons button:hover {
+            background-color: #e9e9e9;
+        }
