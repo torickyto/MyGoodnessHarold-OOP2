@@ -13,6 +13,18 @@ namespace MyGoodnessHarold.Data
             Products = Product.GetAllProducts();
         }
 
+        public void DeleteProduct(int productId)
+        {
+            Product.DeleteProduct(productId);
+            Products = Product.GetAllProducts();
+        }
+
+        public void AddNewProduct(string productName, decimal price, int stockQuantity, int categoryId)
+        {
+            Product.SaveProduct(productName, price, stockQuantity, categoryId);
+            Products = Product.GetAllProducts();
+        }
+
         public void AddItem(Product product)
         {
             var existingItem = SelectedItems.FirstOrDefault(i => i.Name == product.ProductName);

@@ -1,7 +1,6 @@
 ﻿@page "/Product_Management"
-@inject NavigationManager NavigationManager
 @using MyGoodnessHarold.Data;
-@using MySqlConnector;
+@inject ProductService productService
 
 <div class="product-management-container">
     <link href="css/Product_Management.css" rel="stylesheet">
@@ -10,7 +9,6 @@
         <span class="title">Product Management</span>
     </div>
 
-   
     <div class="content">
         <table>
             <thead>
@@ -24,7 +22,7 @@
                 </tr>
             </thead>
             <tbody>
-                @foreach (var product in Products)
+                @foreach (var product in productService.Products)
                 {
                     <tr>
                         <td>@product.ProductID</td>
@@ -63,33 +61,24 @@
     </div>
 </div>
 @code {
-    private List<Product> Products;
     private string newProductName;
     private decimal newPrice;
     private int newStockQuantity;
     private int newCategoryId;
 
-    protected override void OnInitialized()
-    {
-        Products = Product.GetAllProducts();
-    }
-
     private void DeleteProduct(Product product)
     {
-        Product.DeleteProduct(product.ProductID);
-        Products.Remove(product);
+        productService.DeleteProduct(product.ProductID);
     }
 
     private void SaveNewProduct()
     {
-        Console.WriteLine($"New Product: {newProductName}, Price: {newPrice}, Stock: {newStockQuantity}, Category: {newCategoryId}");
+        productService.AddNewProduct(newProductName, newPrice, newStockQuantity, newCategoryId);
+        ClearForm();
+    }
 
-        Product.SaveProduct(newProductName, newPrice, newStockQuantity, newCategoryId); ;
-
-        
-        Products = Product.GetAllProducts();
-
-        
+    private void ClearForm()
+    {
         newProductName = string.Empty;
         newPrice = 0.0m;
         newStockQuantity = 0;
