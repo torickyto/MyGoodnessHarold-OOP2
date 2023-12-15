@@ -29,7 +29,7 @@ namespace MyGoodnessHarold.Data
                 Server = "localhost",
                 Database = "harold",
                 UserID = "root",
-                Password = "password"
+                Password = "andromon"
             };
 
             using (var connection = new MySqlConnection(builder.ConnectionString))
@@ -65,14 +65,13 @@ namespace MyGoodnessHarold.Data
                 Server = "localhost",
                 Database = "harold",
                 UserID = "root",
-                Password = "password"
+                Password = "andromon"
             };
 
             using (var connection = new MySqlConnection(builder.ConnectionString))
             {
                 connection.Open();
 
-                // Example SQL command to delete a product by ProductID
                 string sql = "DELETE FROM products WHERE ProductID = @ProductId";
                 using (var command = new MySqlCommand(sql, connection))
                 {
