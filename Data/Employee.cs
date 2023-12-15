@@ -1,25 +1,57 @@
-using System;
+using MySqlConnector;
 
-namespace MyGoodnessHarold.Data
+namespace MyGoodnessHarold.Data;
+
+public class Employee
 {
-    public class UserStateService
+    public string EmployeeID { get; set; }
+    public string FirstName { get; set; }
+    public string LastName { get; set; }
+    public string Position { get; set; }
+    public string Password { get; set; }
+
+    public Employee(string EmployeeID, string FirstName, string LastName, string Position)
     {
-        public string FirstName { get; private set; }
+        this.EmployeeID = EmployeeID;
+        this.FirstName = FirstName;
+        this.LastName = LastName;
+        this.Position = Position;
+    }
 
-        public event Action OnUserStateChanged;
-
-        public void SetCurrentUser(string firstName)
+    public static List<Employee> Connect()
+    {
+        List<Employee> Employees = new List<Employee>();
+        var builder = new MySqlConnectionStringBuilder()
         {
-            FirstName = firstName;
-            NotifyUserStateChanged();
+            Server = "localhost",
+            Database = "harold",
+            UserID = "root",
+            Password = "andromon",
+        };
+
+        using (var connection = new MySqlConnection(builder.ConnectionString))
+        {
+            connection.Open();
+            string sql = "SELECT * FROM products";
+            MySqlCommand command = new MySqlCommand(sql, connection);
+            MySqlDataReader reader = command.ExecuteReader();
+            while (reader.Read())
+            {
+                Employees.Add(new Employee(
+                    reader.GetString("EmployeeID"),
+                    reader.GetString("FirstName"),
+                    reader.GetString("LastName"),
+                    reader.GetString("Position")
+                ));
+            }
         }
 
-        public void ClearCurrentUser()
-        {
-            FirstName = null;
-            NotifyUserStateChanged();
-        }
+        return Employees;
+    }
 
-        private void NotifyUserStateChanged() => OnUserStateChanged?.Invoke();
+    public override string ToString()
+    {
+        return $"{EmployeeID}, {FirstName}, {LastName}, {Position}";
     }
 }
+
