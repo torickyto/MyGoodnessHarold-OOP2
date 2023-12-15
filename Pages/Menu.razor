@@ -1,10 +1,21 @@
-﻿@page "/menu"
+﻿@*
+  POS Menu System for "My Goodness Harold" Kitchen
+ 
+  This POS (Point of Sale) menu system is designed to facilitate the ordering process for a kitchen environment.
+  It displays a list of food items retrieved from a database, allowing kitchen staff or customers to place orders.
+  Users are greeted by name and can view the current time. They can add items to their order by interacting with the menu,
+  which updates a running total including tax. The system supports item selection, quantity updates, and order finalization.
+  Once an order is finalized, a message is displayed, and there is an option to print the order. The interface is intuitive,
+  ensuring a smooth ordering experience.
+ *@
+
+@page "/menu"
 @using MyGoodnessHarold.Data;
 @using MySqlConnector;
 @inject UserStateService userStateService
-
+<!--The following is html code for the menu page-->
 <div class="menu-container">
-
+    <!--Header and logged in user with time-->
     <link href="css/Menu.css" rel="stylesheet">
     <div class="menu-header">
         <div class="header-text">
@@ -13,17 +24,18 @@
         </div>
         <h1 class="menu-title">Menu</h1> 
     </div>
-
+    <!--For when an order is printed, displays order printed text-->
     @if (showMessage)
     {
         <div class="order-printed-message">
             @messageText
         </div>
     }
-
+    <!--Body for the menu page, where all food items are displayed-->
     <div class="menu-body">
         <div class="menu-items">
-            @foreach (var product in Products)
+            <!--little boxes created for each product, shows the price and product name, and has a button to add the item to order-->
+            @foreach (var product in Products) 
             {
                 <div class="menu-item">
                     <div class="item-info">
@@ -34,6 +46,7 @@
                 </div>
             }
         </div>
+        <!--This area is where the selected items go, shows the name of the product, quanitity selected with the price and an option to remove the item-->
         <div class="selected-items">
             <div class="selected-items-list">
                 @foreach (var selectedItem in SelectedItems.Where(i => i.Quantity > 0))
@@ -45,6 +58,7 @@
                     </div>
                 }
             </div>
+            <!--calculates the total price and adds gst into total-->
             <div class="total">
                 <div>GST 10%: @((Total * 0.1m).ToString("C"))</div>
                 <div>Total: @((Total * 1.1m).ToString("C"))</div>
@@ -56,6 +70,7 @@
 
 
 @code {
+    //list of products and menu items, calculates the item price by * by quantity
     private List<Product> Products;
 
     private List<MenuItem> SelectedItems = new List<MenuItem>();
@@ -70,6 +85,7 @@
 
     private Timer timer;
 
+    //sets the current time in the menu page
     protected override void OnInitialized()
     {
         currentTime = DateTime.Now;
@@ -77,7 +93,7 @@
 
         Products = Product.GetAllProducts();
     }
-
+    //updates time
     private void UpdateCurrentTime(object state)
     {
         currentTime = DateTime.Now;
@@ -89,6 +105,7 @@
         timer?.Dispose();
     }
 
+    //prints the order and clears the order list and provides validation order was printed
     private void PrintOrder()
     {
         SelectedItems.Clear();
@@ -103,6 +120,7 @@
         });
     }
 
+    //adds an item to the menu
     private void AddItem(Product product)
     {
         var existingItem = SelectedItems.FirstOrDefault(i => i.Name == product.ProductName);
@@ -116,6 +134,7 @@
         }
     }
 
+    //removes an item from the menu 
     private void RemoveItem(MenuItem item)
     {
         var existingItem = SelectedItems.FirstOrDefault(i => i.Name == item.Name);
