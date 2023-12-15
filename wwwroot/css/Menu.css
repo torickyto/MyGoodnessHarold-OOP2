@@ -11,7 +11,28 @@
     background-color: #06275a;
     color: #FFFFFF;
     padding: 16px;
+    display: flex;
+    justify-content: space-between; 
+    align-items: center;
+}
+
+.header-text {
+    text-align: left;
+}
+
+.menu-title {
     text-align: center;
+    flex-grow: 1;
+}
+
+.branding-logo {
+    max-height: 25%;
+    max-width: 25%; 
+    margin-right: 16px;
+}
+
+.header-text {
+    text-align: left; 
 }
 
 .menu-body {
@@ -76,6 +97,15 @@
     padding: 8px;
     border-bottom: 1px solid #ddd;
 }
+
+.branding img {
+    max-width: 80%;
+    height: auto;
+    display: block;
+    margin: 0 auto 20px;
+    padding: 0;
+}
+
 
 .removeButton {
     width: 20px; 

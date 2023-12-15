@@ -4,11 +4,15 @@
 @inject UserStateService userStateService
 
 <div class="menu-container">
-    <link href="css/Menu.css" rel="stylesheet">
 
+    <link href="css/Menu.css" rel="stylesheet">
     <div class="menu-header">
-        <h3>Welcome, @userStateService.FirstName</h3>
-        <h1>Menu</h1>
+        <img src="Images/branding-logo.jpg" alt="Branding Logo" class="branding-logo" />
+        <div class="header-text">
+            <h3>Welcome, @userStateService.FirstName</h3>
+            <p>@currentTime.ToString("HH:mm:ss")</p>
+        </div>
+        <h1 class="menu-title">Menu</h1> 
     </div>
 
     @if (showMessage)
@@ -63,9 +67,27 @@
 
     private bool showMessage = false;
 
+    private DateTime currentTime;
+
+    private Timer timer;
+
     protected override void OnInitialized()
     {
+        currentTime = DateTime.Now;
+        timer = new Timer(UpdateCurrentTime, null, 0, 1000);
+
         Products = Product.GetAllProducts();
+    }
+
+    private void UpdateCurrentTime(object state)
+    {
+        currentTime = DateTime.Now;
+        InvokeAsync(StateHasChanged); 
+    }
+
+    public void Dispose()
+    {
+        timer?.Dispose();
     }
 
     private void PrintOrder()
