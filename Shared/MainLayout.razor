@@ -8,6 +8,10 @@
             {
                 <button @onclick="NavigateToProductManagement">Product Management</button>
             }
+            else if (IsProductManagementPage)
+            {
+                <button @onclick="NavigateToProductPage">Back to Menu</button>
+            }
             <button @onclick="Logout">Logout</button>
         </div>
 
@@ -19,10 +23,16 @@
 
 @code {
     private bool IsMainPage => NavigationManager.Uri.Contains("/menu", StringComparison.OrdinalIgnoreCase);
+    private bool IsProductManagementPage => NavigationManager.Uri.Contains("/Product_Management", StringComparison.OrdinalIgnoreCase);
 
     private async Task NavigateToProductManagement()
     {
         NavigationManager.NavigateTo("/Product_Management");
+    }
+
+    private async Task NavigateToProductPage()
+    {
+        NavigationManager.NavigateTo("/menu");
     }
 
     private async Task Logout()
@@ -31,3 +41,4 @@
         NavigationManager.NavigateTo("/", true);
     }
 }
+
