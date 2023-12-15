@@ -20,6 +20,8 @@ public static class MauiProgram
 		builder.Services.AddBlazorWebViewDeveloperTools();
 
         builder.Services.AddSingleton<UserStateService>();
+		builder.Services.AddSingleton<TimerService>();
+        builder.Services.AddSingleton<ProductService>();
 #endif
 
 
