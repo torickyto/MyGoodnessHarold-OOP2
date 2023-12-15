@@ -22,7 +22,7 @@ namespace MyGoodnessHarold.Data
                 while (reader.Read())
                 {
                         loggedInEmployee = new Employee(
-                        reader.GetInt32("EmployeeID").ToString(), // Convert INT to String
+                        reader.GetInt32("EmployeeID").ToString(),
                         reader.GetString("FirstName"),
                         reader.GetString("LastName"),
                         reader.GetString("Position")

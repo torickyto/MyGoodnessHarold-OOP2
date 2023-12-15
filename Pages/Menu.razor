@@ -1,17 +1,17 @@
 ﻿@page "/menu"
-@using MyGoodnessHarold.Data;
-@using MySqlConnector;
+@using MyGoodnessHarold.Data
 @inject UserStateService userStateService
+@inject TimerService timerService
+@inject ProductService productService
 
 <div class="menu-container">
-
     <link href="css/Menu.css" rel="stylesheet">
     <div class="menu-header">
         <div class="header-text">
             <h3>Welcome, @userStateService.FirstName</h3>
-            <p>@currentTime.ToString("HH:mm:ss")</p>
+            <p>@timerService.CurrentTime.ToString("HH:mm:ss")</p>
         </div>
-        <h1 class="menu-title">Menu</h1> 
+        <h1 class="menu-title">Menu</h1>
     </div>
 
     @if (showMessage)
@@ -23,75 +23,49 @@
 
     <div class="menu-body">
         <div class="menu-items">
-            @foreach (var product in Products)
+            @foreach (var product in productService.Products)
             {
                 <div class="menu-item">
                     <div class="item-info">
                         <div class="item-name">@product.ProductName</div>
                         <div class="item-price">@product.Price.ToString("C")</div>
                     </div>
-                    <button @onclick="() => AddItem(product)">+</button>
+                    <button @onclick="() => productService.AddItem(product)">+</button>
                 </div>
             }
         </div>
         <div class="selected-items">
             <div class="selected-items-list">
-                @foreach (var selectedItem in SelectedItems.Where(i => i.Quantity > 0))
+                @foreach (var selectedItem in productService.SelectedItems.Where(i => i.Quantity > 0))
                 {
                     <div class="selected-item">
                         <div class="selected-item-name">@selectedItem.Name x @selectedItem.Quantity</div>
                         <div class="selected-item-price">@((selectedItem.Price * selectedItem.Quantity).ToString("C"))</div>
-                        <button class="removeButton" @onclick="() => RemoveItem(selectedItem)">-</button>
+                        <button class="removeButton" @onclick="() => productService.RemoveItem(selectedItem)">-</button>
                     </div>
                 }
             </div>
             <div class="total">
-                <div>GST 10%: @((Total * 0.1m).ToString("C"))</div>
-                <div>Total: @((Total * 1.1m).ToString("C"))</div>
+                <div>GST 10%: @((productService.GetTotal() * 0.1m).ToString("C"))</div>
+                <div>Total: @((productService.GetTotal() * 1.1m).ToString("C"))</div>
                 <button class="print-button" @onclick="PrintOrder">PRINT</button>
             </div>
         </div>
     </div>
 </div>
 
-
 @code {
-    private List<Product> Products;
-
-    private List<MenuItem> SelectedItems = new List<MenuItem>();
-
-    private decimal Total => SelectedItems.Sum(item => item.Price * item.Quantity);
-
-    private string messageText = "";
-
     private bool showMessage = false;
-
-    private DateTime currentTime;
-
-    private Timer timer;
+    private string messageText = "";
 
     protected override void OnInitialized()
     {
-        currentTime = DateTime.Now;
-        timer = new Timer(UpdateCurrentTime, null, 0, 1000);
-
-        Products = Product.GetAllProducts();
-    }
-
-    private void UpdateCurrentTime(object state)
-    {
-        currentTime = DateTime.Now;
-        InvokeAsync(StateHasChanged); 
-    }
-
-    public void Dispose()
-    {
-        timer?.Dispose();
+        timerService.OnTimeChanged += () => InvokeAsync(StateHasChanged);
     }
 
     private void PrintOrder()
     {
-        SelectedItems.Clear();
+        productService.SelectedItems.Clear();
 
         messageText = "Order Printed";
         showMessage = true;
@@ -99,40 +73,12 @@
         Task.Delay(3000).ContinueWith(_ =>
         {
             showMessage = false;
-            InvokeAsync(StateHasChanged); 
+            InvokeAsync(StateHasChanged);
         });
     }
 
-    private void AddItem(Product product)
+    public void Dispose()
     {
-        var existingItem = SelectedItems.FirstOrDefault(i => i.Name == product.ProductName);
-        if (existingItem != null)
-        {
-            existingItem.Quantity++;
-        }
-        else
-        {
-            SelectedItems.Add(new MenuItem { Name = product.ProductName, Price = product.Price, Quantity = 1 });
-        }
-    }
-
-    private void RemoveItem(MenuItem item)
-    {
-        var existingItem = SelectedItems.FirstOrDefault(i => i.Name == item.Name);
-        if (existingItem != null)
-        {
-            existingItem.Quantity--;
-            if (existingItem.Quantity == 0)
-            {
-                SelectedItems.Remove(existingItem);
-            }
-        }
-    }
-
-    public class MenuItem
-    {
-        public string Name { get; set; }
-        public decimal Price { get; set; }
-        public int Quantity { get; set; }
+        timerService.Dispose();
     }
 }
