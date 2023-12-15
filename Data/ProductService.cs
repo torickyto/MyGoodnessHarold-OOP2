@@ -8,9 +8,17 @@ namespace MyGoodnessHarold.Data
         public List<Product> Products { get; private set; }
         public List<MenuItem> SelectedItems { get; private set; } = new List<MenuItem>();
 
+        public List<string> Categories { get; private set; }
+
         public ProductService()
         {
             Products = Product.GetAllProducts();
+            Categories = FetchCategories();
+        }
+
+        private List<string> FetchCategories()
+        {
+            return new List<string> { "All", "Mains", "Appetizers", "Desserts" };
         }
 
         public void DeleteProduct(int productId)
@@ -50,6 +58,30 @@ namespace MyGoodnessHarold.Data
                 }
             }
         }
+
+        public void UpdateProductStock(Product product, int quantity)
+        {
+            Product.UpdateStockQuantity(product.ProductID, quantity);
+        }
+
+        public string ProcessOrder()
+        {
+            foreach (var item in SelectedItems)
+            {
+                var product = Products.FirstOrDefault(p => p.ProductName == item.Name);
+                if (product != null && product.StockQuantity >= item.Quantity)
+                {
+                    UpdateProductStock(product, product.StockQuantity - item.Quantity);
+                }
+            }
+
+            SelectedItems.Clear();
+            Products = Product.GetAllProducts(); // Refresh product list after processing
+
+            return "Order Printed";
+        }
+
+
 
         public decimal GetTotal()
         {

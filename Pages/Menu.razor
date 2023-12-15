@@ -21,9 +21,16 @@
         </div>
     }
 
+    <select @onchange="FilterProducts">
+        @foreach (var category in productService.Categories)
+        {
+            <option value="@category">@category</option>
+        }
+    </select>
+
     <div class="menu-body">
         <div class="menu-items">
-            @foreach (var product in productService.Products)
+            @foreach (var product in FilteredProducts)
             {
                 <div class="menu-item">
                     <div class="item-info">
@@ -34,6 +41,7 @@
                 </div>
             }
         </div>
+
         <div class="selected-items">
             <div class="selected-items-list">
                 @foreach (var selectedItem in productService.SelectedItems.Where(i => i.Quantity > 0))
@@ -57,17 +65,26 @@
 @code {
     private bool showMessage = false;
     private string messageText = "";
+    private string selectedCategory = "All";
 
     protected override void OnInitialized()
     {
         timerService.OnTimeChanged += () => InvokeAsync(StateHasChanged);
     }
 
+    private void FilterProducts(ChangeEventArgs e)
+    {
+        selectedCategory = e.Value.ToString();
+    }
+
+    private IEnumerable<Product> FilteredProducts =>
+        selectedCategory == "All" ?
+        productService.Products :
+        productService.Products.Where(p => p.Category == selectedCategory);
+
     private void PrintOrder()
     {
-        productService.SelectedItems.Clear();
-
-        messageText = "Order Printed";
+        messageText = productService.ProcessOrder();
         showMessage = true;
 
         Task.Delay(3000).ContinueWith(_ =>

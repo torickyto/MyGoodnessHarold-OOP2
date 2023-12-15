@@ -29,7 +29,7 @@ namespace MyGoodnessHarold.Data
                 Server = "localhost",
                 Database = "harold",
                 UserID = "root",
-                Password = "password"
+                Password = "andromon"
             };
 
             using (var connection = new MySqlConnection(builder.ConnectionString))
@@ -65,7 +65,7 @@ namespace MyGoodnessHarold.Data
                 Server = "localhost",
                 Database = "harold",
                 UserID = "root",
-                Password = "password"
+                Password = "andromon"
             };
 
             using (var connection = new MySqlConnection(builder.ConnectionString))
@@ -88,7 +88,7 @@ namespace MyGoodnessHarold.Data
                     Server = "localhost",
                     Database = "harold",
                     UserID = "root",
-                    Password = "password"
+                    Password = "andromon"
                 };
 
                 using (var connection = new MySqlConnection(builder.ConnectionString))
@@ -113,6 +113,29 @@ namespace MyGoodnessHarold.Data
                 }
             
             
+        }
+        public static void UpdateStockQuantity(int productId, int newQuantity)
+        {
+            var builder = new MySqlConnectionStringBuilder()
+            {
+                Server = "localhost",
+                Database = "harold",
+                UserID = "root",
+                Password = "andromon"
+            };
+
+            using (var connection = new MySqlConnection(builder.ConnectionString))
+            {
+                connection.Open();
+
+                string sql = "UPDATE products SET StockQuantity = @NewQuantity WHERE ProductID = @ProductId";
+                using (var command = new MySqlCommand(sql, connection))
+                {
+                    command.Parameters.AddWithValue("@NewQuantity", newQuantity);
+                    command.Parameters.AddWithValue("@ProductId", productId);
+                    command.ExecuteNonQuery();
+                }
+            }
         }
     }
 }
