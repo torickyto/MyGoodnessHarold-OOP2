@@ -26,7 +26,7 @@ public class Employee
             Server = "localhost",
             Database = "harold",
             UserID = "root",
-            Password = "password",
+            Password = "andromon",
         };
 
         using (var connection = new MySqlConnection(builder.ConnectionString))

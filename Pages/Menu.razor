@@ -65,9 +65,7 @@
 
     private void PrintOrder()
     {
-        productService.SelectedItems.Clear();
-
-        messageText = "Order Printed";
+        messageText = productService.ProcessOrder();
         showMessage = true;
 
         Task.Delay(3000).ContinueWith(_ =>

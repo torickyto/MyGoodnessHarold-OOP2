@@ -51,6 +51,28 @@ namespace MyGoodnessHarold.Data
             }
         }
 
+        public void UpdateProductStock(Product product, int quantity)
+        {
+            Product.UpdateStockQuantity(product.ProductID, quantity);
+        }
+
+        public string ProcessOrder()
+        {
+            foreach (var item in SelectedItems)
+            {
+                var product = Products.FirstOrDefault(p => p.ProductName == item.Name);
+                if (product != null && product.StockQuantity >= item.Quantity)
+                {
+                    UpdateProductStock(product, product.StockQuantity - item.Quantity);
+                }
+            }
+
+            SelectedItems.Clear();
+            Products = Product.GetAllProducts(); // Refresh product list after processing
+
+            return "Order Printed";
+        }
+
         public decimal GetTotal()
         {
             return SelectedItems.Sum(item => item.Price * item.Quantity);
