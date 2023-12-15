@@ -11,6 +11,13 @@
         <h1>Menu</h1>
     </div>
 
+    @if (showMessage)
+    {
+        <div class="order-printed-message">
+            @messageText
+        </div>
+    }
+
     <div class="menu-body">
         <div class="menu-items">
             @foreach (var product in Products)
@@ -38,11 +45,12 @@
             <div class="total">
                 <div>GST 10%: @((Total * 0.1m).ToString("C"))</div>
                 <div>Total: @((Total * 1.1m).ToString("C"))</div>
-                <button class="print-button">PRINT</button>
+                <button class="print-button" @onclick="PrintOrder">PRINT</button>
             </div>
         </div>
     </div>
 </div>
+
 
 @code {
     private List<Product> Products;
@@ -51,9 +59,27 @@
 
     private decimal Total => SelectedItems.Sum(item => item.Price * item.Quantity);
 
+    private string messageText = "";
+
+    private bool showMessage = false;
+
     protected override void OnInitialized()
     {
         Products = Product.GetAllProducts();
+    }
+
+    private void PrintOrder()
+    {
+        SelectedItems.Clear();
+
+        messageText = "Order Printed";
+        showMessage = true;
+
+        Task.Delay(3000).ContinueWith(_ =>
+        {
+            showMessage = false;
+            InvokeAsync(StateHasChanged); 
+        });
     }
 
     private void AddItem(Product product)
