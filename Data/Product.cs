@@ -83,29 +83,37 @@ namespace MyGoodnessHarold.Data
         }
         public static void SaveProduct(string productName, decimal price, int stockQuantity, int categoryId)
         {
-            var builder = new MySqlConnectionStringBuilder()
-            {
-                Server = "localhost",
-                Database = "harold",
-                UserID = "root",
-                Password = "password"
-            };
-
-            using (var connection = new MySqlConnection(builder.ConnectionString))
-            {
-                connection.Open();
-
-               
-                string sql = "INSERT INTO products (ProductName, Price, StockQuantity, CategoryID) VALUES (@ProductName, @Price, @StockQuantity, @CategoryId)";
-                using (var command = new MySqlCommand(sql, connection))
+            
+                var builder = new MySqlConnectionStringBuilder()
                 {
-                    command.Parameters.AddWithValue("@ProductName", productName);
-                    command.Parameters.AddWithValue("@Price", price);
-                    command.Parameters.AddWithValue("@StockQuantity", stockQuantity);
-                    command.Parameters.AddWithValue("@CategoryId", categoryId);
-                    command.ExecuteNonQuery();
+                    Server = "localhost",
+                    Database = "harold",
+                    UserID = "root",
+                    Password = "password"
+                };
+
+                using (var connection = new MySqlConnection(builder.ConnectionString))
+                {
+                    connection.Open();
+
+                    string sql = "INSERT INTO products (ProductName, Price, StockQuantity, CategoryID) VALUES (@ProductName, @Price, @StockQuantity, @CategoryId)";
+                    using (var command = new MySqlCommand(sql, connection))
+                    {
+                       
+
+                        command.Parameters.AddWithValue("@Price", price);
+                        command.Parameters.AddWithValue("@StockQuantity", stockQuantity);
+                        command.Parameters.AddWithValue("@CategoryId", categoryId);
+
+                        // Log the SQL command for debugging
+                        Console.WriteLine($"SQL Command: {command.CommandText}");
+
+                        command.ExecuteNonQuery();
+                    }
                 }
-            }
+            
+            
         }
+
     }
 }

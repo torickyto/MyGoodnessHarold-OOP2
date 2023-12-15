@@ -1,23 +1,33 @@
 ﻿@inherits LayoutComponentBase
-@using MyGoodnessHarold.Data;
 @inject NavigationManager NavigationManager
 
 <div class="page">
-	<main>
-		<div class="top-row px-4">
-			<button @onclick="Logout">Logout</button>
-		</div>
+    <main>
+        <div class="top-row px-4">
+            @if (IsMainPage)
+            {
+                <button @onclick="NavigateToProductManagement">Product Management</button>
+            }
+            <button @onclick="Logout">Logout</button>
+        </div>
 
-		<article class="content px-4">
-			@Body
-		</article>
-	</main>
+        <article class="content px-4">
+            @Body
+        </article>
+    </main>
 </div>
 
 @code {
-	private async Task Logout()
-	{
-		await Task.Delay(1000);
-		NavigationManager.NavigateTo("/", true);
-	}
+    private bool IsMainPage => NavigationManager.Uri.Contains("/menu", StringComparison.OrdinalIgnoreCase);
+
+    private async Task NavigateToProductManagement()
+    {
+        NavigationManager.NavigateTo("/Product_Management");
+    }
+
+    private async Task Logout()
+    {
+        await Task.Delay(1000);
+        NavigationManager.NavigateTo("/", true);
+    }
 }
