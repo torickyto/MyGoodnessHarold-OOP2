@@ -6,13 +6,13 @@
         <div class="top-row px-4">
             @if (IsMainPage)
             {
-                <button @onclick="NavigateToProductManagement">Product Management</button>
+                <button class="navButtons" @onclick="NavigateToProductManagement">Product Management</button>
             }
             else if (IsProductManagementPage)
             {
-                <button @onclick="NavigateToProductPage">Back to Menu</button>
+                <button class="navButtons" @onclick="NavigateToProductPage">Back to Menu</button>
             }
-            <button @onclick="Logout">Logout</button>
+            <button class="navButtons" @onclick="Logout">Logout</button>
         </div>
 
         <article class="content px-4">
