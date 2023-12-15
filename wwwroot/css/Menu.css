@@ -28,6 +28,14 @@
     text-align: left;
 }
 
+select {
+    width: 150px;
+    margin-bottom: 5px;
+    margin-top: 10px;
+    padding: 8px;
+    font-size: 16px;
+}
+
 .menu-title {
     position: absolute;
     left: 50%;

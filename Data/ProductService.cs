@@ -8,9 +8,17 @@ namespace MyGoodnessHarold.Data
         public List<Product> Products { get; private set; }
         public List<MenuItem> SelectedItems { get; private set; } = new List<MenuItem>();
 
+        public List<string> Categories { get; private set; }
+
         public ProductService()
         {
             Products = Product.GetAllProducts();
+            Categories = FetchCategories();
+        }
+
+        private List<string> FetchCategories()
+        {
+            return new List<string> { "All", "Mains", "Appetizers", "Desserts" };
         }
 
         public void DeleteProduct(int productId)
@@ -72,6 +80,8 @@ namespace MyGoodnessHarold.Data
 
             return "Order Printed";
         }
+
+
 
         public decimal GetTotal()
         {
