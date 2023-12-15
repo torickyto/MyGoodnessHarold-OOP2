@@ -1,11 +1,13 @@
 ﻿@page "/menu"
 @using MyGoodnessHarold.Data;
 @using MySqlConnector;
+@inject UserStateService userStateService
 
 <div class="menu-container">
     <link href="css/Menu.css" rel="stylesheet">
 
     <div class="menu-header">
+        <h3>Welcome, @userStateService.FirstName</h3>
         <h1>Menu</h1>
     </div>
 

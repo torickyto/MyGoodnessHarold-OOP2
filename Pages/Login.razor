@@ -2,6 +2,7 @@
 @using MyGoodnessHarold.Data;
 @using MySqlConnector;
 @inject NavigationManager NavigationManager
+@inject UserStateService userStateService
 
 <div class="login-container">
     <link href="css/Login.css" rel="stylesheet">
@@ -17,13 +18,7 @@
         </div>
         <div class="pin-entry">
             <label for="pinInput">Enter your PIN</label>
-            <input id="pinInput" type="password" maxlength="4" @bind="userPin" />
-            @*TEMPORARY VALUE CHECK*@
-            <div class="pin-display">
-                <label for="pinDisplay">TEST</label>
-                <input id="pinDisplay" type="text" readonly value="@userPin" />
-            </div>
-            @*TEMPORARY VALUE CHECK*@
+            <input id="pinInput" type="andromon" maxlength="4" @bind="userPin" />
             <div class="pin-buttons">
                 @for (int i = 1; i <= 9; i++)
                 {
@@ -66,6 +61,7 @@
 
             if (isValidPin)
             {
+                userStateService.SetCurrentUser(loggedInEmployee.FirstName);
                 NavigationManager.NavigateTo("/menu", true);
             }
             else
