@@ -49,15 +49,17 @@
     gap: 10px;
 }
 
-    .pin-buttons button {
-        padding: 15px;
-        font-size: 18px;
-        background-color: #f9f9f9;
-        border: 1px solid #ccc;
-        border-radius: 4px;
-        cursor: pointer;
-    }
+.pin-buttons button {
+    padding: 15px;
+    font-size: 18px;
+    background-color: #f9f9f9;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    cursor: pointer;
+}
 
-        .pin-buttons button:hover {
-            background-color: #e9e9e9;
-        }
+.pin-buttons button:hover {
+    background-color: #e9e9e9;
+}
+
+
