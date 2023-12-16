@@ -1,26 +1,33 @@
-﻿@page "/"
+﻿<!-- Login Page
+This Razor page is the login interface for the MyGoodnessHarold application.
+It prompts users for a PIN input to authenticate and grants access to the main menu page in the POS system when successfully loging in.
+The login view is styled using a dedicated CSS file and includes error handling for invalid PIN entries.
+Navigation to the main menu happens when the system validates the user's PIN. -->
+@page "/"
 @using MyGoodnessHarold.Data;
 @using MySqlConnector;
 @inject NavigationManager NavigationManager
 @inject UserStateService userStateService
 
 <div class="login-container">
+    <!-- Link to the CSS stylesheet for styling the login page -->
     <link href="css/Login.css" rel="stylesheet">
 
     <div class="header">
         <span class="title">Harold POS</span>
     </div>
-
+    <!-- Login Box for PIN Entry -->
     <div class="login-box">
         <div class="branding">
             <img src="Images/myGoodnessHarold.png" alt="My Goodness Harold logo" />
 
         </div>
-
+        <!-- PIN Entry Section -->
         <div class="pin-entry">
             <label for="pinInput">Enter your PIN</label>
             <input id="pinInput" type="password" maxlength="4" @bind="userPin" />
             <div class="pin-buttons">
+                <!-- Error Message Overlay -->
                 @if (!string.IsNullOrEmpty(errorMessage))
                 {
                     <div class="error-overlay" @onclick="DismissError">
@@ -32,6 +39,7 @@
                     int localValue = i;
                     <button @onclick="() => AddDigit(localValue.ToString())">@localValue</button>
                 }
+                <!-- Clear and Submit Buttons -->
                 <button @onclick="ClearPin">X</button>
                 <button @onclick="() => AddDigit(0.ToString())">0</button>
                 <button @onclick="SubmitPin">→</button>
@@ -44,8 +52,8 @@
     private string userPin = "";
     private Employee loggedInEmployee;
     private string errorMessage = "";
-    
 
+    // Method to Append a Digit to the PIN
     private void AddDigit(string digit)
     {
         if (userPin.Length < 4)
@@ -54,6 +62,7 @@
         }
     }
 
+    // Method to Remove the Last Digit from the PIN
     private void ClearPin()
     {
         if (userPin.Length > 0)
@@ -62,6 +71,7 @@
         }
     }
 
+    // Method to Submit the PIN for Validation
     private async void SubmitPin()
     {
         if (!string.IsNullOrEmpty(userPin) && userPin.Length == 4)
@@ -84,6 +94,8 @@
         }
         await Task.Delay(100);
     }
+
+    // Method to Dismiss the Error Message
     private void DismissError()
     {
         errorMessage = "";
