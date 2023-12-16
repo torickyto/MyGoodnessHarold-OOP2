@@ -4,6 +4,18 @@
 @inject TimerService timerService
 @inject ProductService productService
 
+@*
+  POS Menu System for "My Goodness Harold" Kitchen
+ 
+  This POS (Point of Sale) menu system is designed to facilitate the ordering process for a kitchen environment.
+  It displays a list of food items retrieved from a database, allowing kitchen staff or customers to place orders.
+  Users are greeted by name and can view the current time. They can add items to their order by interacting with the menu,
+  which updates a running total including tax. The system supports item selection, quantity updates, and order finalization.
+  Once an order is finalized, a message is displayed, and there is an option to print the order. The interface is intuitive,
+  ensuring a smooth ordering experience.
+ *@
+
+
 <div class="menu-container">
     <link href="css/Menu.css" rel="stylesheet">
     <div class="menu-header">
@@ -30,6 +42,8 @@
 
     <div class="menu-body">
         <div class="menu-items">
+
+
             @foreach (var product in FilteredProducts)
             {
                 <div class="menu-item">

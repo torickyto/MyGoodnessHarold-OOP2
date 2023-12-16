@@ -1,25 +1,62 @@
-using System;
+using MySqlConnector;
 
-namespace MyGoodnessHarold.Data
+namespace MyGoodnessHarold.Data;
+//employee class
+public class Employee
+    //getters and setters
 {
-    public class UserStateService
+    public string EmployeeID { get; set; }
+    public string FirstName { get; set; }
+    public string LastName { get; set; }
+    public string Position { get; set; }
+    public string Password { get; set; }
+
+    public Employee(string EmployeeID, string FirstName, string LastName, string Position)
+        //constructor
     {
-        public string FirstName { get; private set; }
+        this.EmployeeID = EmployeeID;
+        this.FirstName = FirstName;
+        this.LastName = LastName;
+        this.Position = Position;
+    }
 
-        public event Action OnUserStateChanged;
-
-        public void SetCurrentUser(string firstName)
+    //connects to database and gets a list of employees
+    public static List<Employee> Connect()
+    {
+        List<Employee> Employees = new List<Employee>();
+        //set up connection to database where data is kept
+        var builder = new MySqlConnectionStringBuilder()
         {
-            FirstName = firstName;
-            NotifyUserStateChanged();
+            Server = "localhost",
+            Database = "harold",
+            UserID = "root",
+            Password = "password",
+        };
+        //talk with database and gather employee data
+        using (var connection = new MySqlConnection(builder.ConnectionString))
+        {
+            connection.Open();
+            string sql = "SELECT * FROM products";
+            MySqlCommand command = new MySqlCommand(sql, connection);
+            MySqlDataReader reader = command.ExecuteReader();
+            while (reader.Read())
+            {
+                //make a new employee for each instance
+                Employees.Add(new Employee(
+                    reader.GetString("EmployeeID"),
+                    reader.GetString("FirstName"),
+                    reader.GetString("LastName"),
+                    reader.GetString("Position")
+                ));
+            }
         }
 
-        public void ClearCurrentUser()
-        {
-            FirstName = null;
-            NotifyUserStateChanged();
-        }
-
-        private void NotifyUserStateChanged() => OnUserStateChanged?.Invoke();
+        return Employees;
+    }
+    //to string method for the employee info
+    public override string ToString()
+    {
+        return $"{EmployeeID}, {FirstName}, {LastName}, {Position}";
     }
 }
+
