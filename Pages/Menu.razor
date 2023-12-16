@@ -1,4 +1,10 @@
-﻿@*
+﻿@page "/menu"
+@using MyGoodnessHarold.Data
+@inject UserStateService userStateService
+@inject TimerService timerService
+@inject ProductService productService
+
+@*
   POS Menu System for "My Goodness Harold" Kitchen
  
   This POS (Point of Sale) menu system is designed to facilitate the ordering process for a kitchen environment.
@@ -9,15 +15,8 @@
   ensuring a smooth ordering experience.
  *@
 
-@page "/menu"
-@using MyGoodnessHarold.Data
-@inject UserStateService userStateService
-@inject TimerService timerService
-@inject ProductService productService
 
-<!--The following is html code for the menu page-->
 <div class="menu-container">
-    <!--Header and logged in user with time-->
     <link href="css/Menu.css" rel="stylesheet">
     <div class="menu-header">
         <div class="header-text">
@@ -26,7 +25,7 @@
         </div>
         <h1 class="menu-title">Menu</h1>
     </div>
-    <!--For when an order is printed, displays order printed text-->
+
     @if (showMessage)
     {
         <div class="order-printed-message">
@@ -41,12 +40,9 @@
         }
     </select>
 
-    <!--Body for the menu page, where all food items are displayed-->
     <div class="menu-body">
         <div class="menu-items">
             @foreach (var product in FilteredProducts)
-            <!--little boxes created for each product, shows the price and product name, and has a button to add the item to order-->
-            @foreach (var product in Products) 
             {
                 <div class="menu-item">
                     <div class="item-info">
@@ -58,7 +54,6 @@
             }
         </div>
 
-        <!--This area is where the selected items go, shows the name of the product, quanitity selected with the price and an option to remove the item-->
         <div class="selected-items">
             <div class="selected-items-list">
                 @foreach (var selectedItem in productService.SelectedItems.Where(i => i.Quantity > 0))
@@ -70,7 +65,6 @@
                     </div>
                 }
             </div>
-            <!--calculates the total price and adds gst into total-->
             <div class="total">
                 <div>GST 10%: @((productService.GetTotal() * 0.1m).ToString("C"))</div>
                 <div>Total: @((productService.GetTotal() * 1.1m).ToString("C"))</div>
@@ -82,31 +76,15 @@
 
 @code {
     private bool showMessage = false;
-    //list of products and menu items, calculates the item price by * by quantity
-    private List<Product> Products;
-
-    private List<MenuItem> SelectedItems = new List<MenuItem>();
-
-    private decimal Total => SelectedItems.Sum(item => item.Price * item.Quantity);
-
     private string messageText = "";
     private string selectedCategory = "All";
 
-    private bool showMessage = false;
-
-    private DateTime currentTime;
-
-    private Timer timer;
-
-    //sets the current time in the menu page
     protected override void OnInitialized()
     {
         timerService.OnTimeChanged += () => InvokeAsync(StateHasChanged);
     }
 
     private void FilterProducts(ChangeEventArgs e)
-    //updates time
-    private void UpdateCurrentTime(object state)
     {
         selectedCategory = e.Value.ToString();
     }
@@ -116,7 +94,6 @@
         productService.Products :
         productService.Products.Where(p => p.Category == selectedCategory);
 
-    //prints the order and clears the order list and provides validation order was printed
     private void PrintOrder()
     {
         messageText = productService.ProcessOrder();
@@ -130,35 +107,6 @@
     }
 
     public void Dispose()
-    //adds an item to the menu
-    private void AddItem(Product product)
-    {
-        var existingItem = SelectedItems.FirstOrDefault(i => i.Name == product.ProductName);
-        if (existingItem != null)
-        {
-            existingItem.Quantity++;
-        }
-        else
-        {
-            SelectedItems.Add(new MenuItem { Name = product.ProductName, Price = product.Price, Quantity = 1 });
-        }
-    }
-
-    //removes an item from the menu 
-    private void RemoveItem(MenuItem item)
-    {
-        var existingItem = SelectedItems.FirstOrDefault(i => i.Name == item.Name);
-        if (existingItem != null)
-        {
-            existingItem.Quantity--;
-            if (existingItem.Quantity == 0)
-            {
-                SelectedItems.Remove(existingItem);
-            }
-        }
-    }
-
-    public class MenuItem
     {
         timerService.Dispose();
     }
