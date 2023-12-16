@@ -6,7 +6,7 @@ namespace MyGoodnessHarold.Data
 {
     public static class LoginHelper
     {
-        private static readonly string ConnectionString = "Server=localhost;Database=harold;User ID=root;Password=andromon;";
+        private static readonly string ConnectionString = "Server=localhost;Database=harold;User ID=root;Password=password;";
 
         public static bool ValidatePin(string enteredPin, out Employee loggedInEmployee)
         {
