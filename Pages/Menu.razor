@@ -10,9 +10,11 @@
  *@
 
 @page "/menu"
-@using MyGoodnessHarold.Data;
-@using MySqlConnector;
+@using MyGoodnessHarold.Data
 @inject UserStateService userStateService
+@inject TimerService timerService
+@inject ProductService productService
+
 <!--The following is html code for the menu page-->
 <div class="menu-container">
     <!--Header and logged in user with time-->
@@ -20,9 +22,9 @@
     <div class="menu-header">
         <div class="header-text">
             <h3>Welcome, @userStateService.FirstName</h3>
-            <p>@currentTime.ToString("HH:mm:ss")</p>
+            <p>@timerService.CurrentTime.ToString("HH:mm:ss")</p>
         </div>
-        <h1 class="menu-title">Menu</h1> 
+        <h1 class="menu-title">Menu</h1>
     </div>
     <!--For when an order is printed, displays order printed text-->
     @if (showMessage)
@@ -31,9 +33,18 @@
             @messageText
         </div>
     }
+
+    <select @onchange="FilterProducts">
+        @foreach (var category in productService.Categories)
+        {
+            <option value="@category">@category</option>
+        }
+    </select>
+
     <!--Body for the menu page, where all food items are displayed-->
     <div class="menu-body">
         <div class="menu-items">
+            @foreach (var product in FilteredProducts)
             <!--little boxes created for each product, shows the price and product name, and has a button to add the item to order-->
             @foreach (var product in Products) 
             {
@@ -42,34 +53,35 @@
                         <div class="item-name">@product.ProductName</div>
                         <div class="item-price">@product.Price.ToString("C")</div>
                     </div>
-                    <button @onclick="() => AddItem(product)">+</button>
+                    <button @onclick="() => productService.AddItem(product)">+</button>
                 </div>
             }
         </div>
+
         <!--This area is where the selected items go, shows the name of the product, quanitity selected with the price and an option to remove the item-->
         <div class="selected-items">
             <div class="selected-items-list">
-                @foreach (var selectedItem in SelectedItems.Where(i => i.Quantity > 0))
+                @foreach (var selectedItem in productService.SelectedItems.Where(i => i.Quantity > 0))
                 {
                     <div class="selected-item">
                         <div class="selected-item-name">@selectedItem.Name x @selectedItem.Quantity</div>
                         <div class="selected-item-price">@((selectedItem.Price * selectedItem.Quantity).ToString("C"))</div>
-                        <button class="removeButton" @onclick="() => RemoveItem(selectedItem)">-</button>
+                        <button class="removeButton" @onclick="() => productService.RemoveItem(selectedItem)">-</button>
                     </div>
                 }
             </div>
             <!--calculates the total price and adds gst into total-->
             <div class="total">
-                <div>GST 10%: @((Total * 0.1m).ToString("C"))</div>
-                <div>Total: @((Total * 1.1m).ToString("C"))</div>
+                <div>GST 10%: @((productService.GetTotal() * 0.1m).ToString("C"))</div>
+                <div>Total: @((productService.GetTotal() * 1.1m).ToString("C"))</div>
                 <button class="print-button" @onclick="PrintOrder">PRINT</button>
             </div>
         </div>
     </div>
 </div>
 
-
 @code {
+    private bool showMessage = false;
     //list of products and menu items, calculates the item price by * by quantity
     private List<Product> Products;
 
@@ -78,6 +90,7 @@
     private decimal Total => SelectedItems.Sum(item => item.Price * item.Quantity);
 
     private string messageText = "";
+    private string selectedCategory = "All";
 
     private bool showMessage = false;
 
@@ -88,38 +101,35 @@
     //sets the current time in the menu page
     protected override void OnInitialized()
     {
-        currentTime = DateTime.Now;
-        timer = new Timer(UpdateCurrentTime, null, 0, 1000);
-
-        Products = Product.GetAllProducts();
+        timerService.OnTimeChanged += () => InvokeAsync(StateHasChanged);
     }
+
+    private void FilterProducts(ChangeEventArgs e)
     //updates time
     private void UpdateCurrentTime(object state)
     {
-        currentTime = DateTime.Now;
-        InvokeAsync(StateHasChanged); 
+        selectedCategory = e.Value.ToString();
     }
 
-    public void Dispose()
-    {
-        timer?.Dispose();
-    }
+    private IEnumerable<Product> FilteredProducts =>
+        selectedCategory == "All" ?
+        productService.Products :
+        productService.Products.Where(p => p.Category == selectedCategory);
 
     //prints the order and clears the order list and provides validation order was printed
     private void PrintOrder()
     {
-        SelectedItems.Clear();
-
-        messageText = "Order Printed";
+        messageText = productService.ProcessOrder();
         showMessage = true;
 
         Task.Delay(3000).ContinueWith(_ =>
         {
             showMessage = false;
-            InvokeAsync(StateHasChanged); 
+            InvokeAsync(StateHasChanged);
         });
     }
 
+    public void Dispose()
     //adds an item to the menu
     private void AddItem(Product product)
     {
@@ -150,8 +160,6 @@
 
     public class MenuItem
     {
-        public string Name { get; set; }
-        public decimal Price { get; set; }
-        public int Quantity { get; set; }
+        timerService.Dispose();
     }
 }
