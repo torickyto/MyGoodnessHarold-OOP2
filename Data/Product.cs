@@ -1,7 +1,7 @@
 using MySqlConnector;
 using System;
 using System.Collections.Generic;
-
+//Class page for product, has getters and setters and a constructor
 namespace MyGoodnessHarold.Data
 {
     public class Product
@@ -20,10 +20,12 @@ namespace MyGoodnessHarold.Data
             StockQuantity = stockQuantity;
             Category = category;
         }
-
+        //creates a list of all the products from the database
         public static List<Product> GetAllProducts()
         {
+            //product list
             List<Product> products = new List<Product>();
+            //setup how to connect to the database
             var builder = new MySqlConnectionStringBuilder()
             {
                 Server = "localhost",
@@ -31,7 +33,7 @@ namespace MyGoodnessHarold.Data
                 UserID = "root",
                 Password = "password"
             };
-
+            //open the database and pull product information
             using (var connection = new MySqlConnection(builder.ConnectionString))
             {
                 connection.Open();
@@ -41,6 +43,7 @@ namespace MyGoodnessHarold.Data
 
                 while (reader.Read())
                 {
+                    //create a new instance of product for each new product
                     products.Add(new Product(
                         reader.GetInt32("ProductID"),
                         reader.GetString("ProductName"),
@@ -54,11 +57,13 @@ namespace MyGoodnessHarold.Data
             return products;
         }
 
+        //Converts product to a string
         public override string ToString()
         {
             return $"{ProductID}, {ProductName}, {Price:C}, {StockQuantity}, {Category}";
         }
         public static void DeleteProduct(int productId)
+            //method for deleting a product from database/menu
         {
             var builder = new MySqlConnectionStringBuilder()
             {
@@ -80,10 +85,12 @@ namespace MyGoodnessHarold.Data
                 }
             }
         }
+
         public static void SaveProduct(string productName, decimal price, int stockQuantity, int categoryId)
+        //method for adding a product from database/menu
         {
-            
-                var builder = new MySqlConnectionStringBuilder()
+
+            var builder = new MySqlConnectionStringBuilder()
                 {
                     Server = "localhost",
                     Database = "harold",
@@ -98,7 +105,7 @@ namespace MyGoodnessHarold.Data
                     string sql = "INSERT INTO products (ProductName, Price, StockQuantity, CategoryID) VALUES (@ProductName, @Price, @StockQuantity, @CategoryId)";
                     using (var command = new MySqlCommand(sql, connection))
                     {
-
+                        //add all parameters so system knows what info to fill in
                         command.Parameters.AddWithValue("@ProductName", productName);
                         command.Parameters.AddWithValue("@Price", price);
                         command.Parameters.AddWithValue("@StockQuantity", stockQuantity);
@@ -114,6 +121,7 @@ namespace MyGoodnessHarold.Data
             
             
         }
+        //updates the database with new quantity after adding an item
         public static void UpdateStockQuantity(int productId, int newQuantity)
         {
             var builder = new MySqlConnectionStringBuilder()
@@ -123,6 +131,7 @@ namespace MyGoodnessHarold.Data
                 UserID = "root",
                 Password = "password"
             };
+
 
             using (var connection = new MySqlConnection(builder.ConnectionString))
             {
