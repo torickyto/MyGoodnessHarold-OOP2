@@ -16,10 +16,17 @@
             <img src="Images/myGoodnessHarold.png" alt="My Goodness Harold logo" />
 
         </div>
+
         <div class="pin-entry">
             <label for="pinInput">Enter your PIN</label>
-            <input id="pinInput" type="andromon" maxlength="4" @bind="userPin" />
+            <input id="pinInput" type="password" maxlength="4" @bind="userPin" />
             <div class="pin-buttons">
+                @if (!string.IsNullOrEmpty(errorMessage))
+                {
+                    <div class="error-overlay" @onclick="DismissError">
+                        <div class="error-message">@errorMessage</div>
+                    </div>
+                }
                 @for (int i = 1; i <= 9; i++)
                 {
                     int localValue = i;
@@ -36,6 +43,7 @@
 @code {
     private string userPin = "";
     private Employee loggedInEmployee;
+    private string errorMessage = "";
 
     private void AddDigit(string digit)
     {
@@ -66,13 +74,18 @@
             }
             else
             {
-                Console.WriteLine("Invalid PIN");
+                errorMessage = "Invalid PIN. Please try again.";
             }
         }
         else
         {
-            Console.WriteLine("Invalid PIN");
+            errorMessage = "Invalid PIN. Please try again.";
         }
         await Task.Delay(100);
     }
+    private void DismissError()
+    {
+        errorMessage = "";
+    }
+
 }
