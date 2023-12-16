@@ -1,4 +1,9 @@
-﻿@page "/Product_Management"
+﻿<!--Product Management Page
+This program module is designed for managing products in the mygoodnesharold application
+It allows users to view a list of products, including ID, name, price, stock quantity, and category.
+Users can delete existing products and add new ones, such as name, price, stock quantity, and category.
+The interface updates in real time as products are added or removed.-->
+@page "/Product_Management"
 @using MyGoodnessHarold.Data;
 @inject ProductService productService
 
@@ -9,6 +14,7 @@
         <span class="title">Product Management</span>
     </div>
 
+    <!-- Main Content Section -->
     <div class="content">
         <table>
             <thead>
@@ -21,6 +27,8 @@
                     <th>Action</th>
                 </tr>
             </thead>
+
+            <!-- Table Body with Product Rows -->
             <tbody>
                 @foreach (var product in productService.Products)
                 {
@@ -31,6 +39,8 @@
                         <td>@product.StockQuantity</td>
                         <td>@product.Category</td>
                         <td>
+
+                            <!-- Delete Button for Each Product -->
                             <button class="delete" @onclick="() => DeleteProduct(product)">Delete</button>
                         </td>
                     </tr>
@@ -38,6 +48,7 @@
             </tbody>
         </table>
 
+        <!-- Form for Adding New Products -->
         <form>
             <label for="newProductName">New Product Name:</label>
             <input type="text" id="newProductName" @bind="newProductName" required />
@@ -55,28 +66,34 @@
                 <option value="3">Desserts</option>
             </select>
 
+            <!-- Button to Submit the New Product Details -->
             <button class="save" @onclick="SaveNewProduct">Save New Product</button>
         </form>
-
+        
     </div>
 </div>
 @code {
+
+    // Variables to hold new product details
     private string newProductName;
     private decimal newPrice;
     private int newStockQuantity;
     private int newCategoryId;
 
+    // Method to Delete a Product
     private void DeleteProduct(Product product)
     {
         productService.DeleteProduct(product.ProductID);
     }
 
+    // Method to Save a New Product
     private void SaveNewProduct()
     {
         productService.AddNewProduct(newProductName, newPrice, newStockQuantity, newCategoryId);
         ClearForm();
     }
 
+    // Method to Clear the Input Form
     private void ClearForm()
     {
         newProductName = string.Empty;
